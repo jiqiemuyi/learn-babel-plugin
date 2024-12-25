@@ -1,6 +1,22 @@
 {
   "presets": [
-    /* "@babel/preset-env" */
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "usage", //默认为false，即不做api兼容
+        "corejs": {
+          "version": 3
+        }
+      }
+    ]
   ],
-  "plugins": ["./transform-let-to-var.js", "./transform-arrow-functions.js"]
+  "plugins": [
+    // "./transform-let-to-var.js", "./transform-arrow-functions.js",
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": 3
+      }
+    ]
+  ]
 }
