@@ -1,22 +1,76 @@
+// // eg:input_1 -> output_1_1 // npx babel input_1.js -o output_1_1.js
+
+// {
+//   "presets": ["@babel/preset-env"],
+//   "plugins": []
+// }
+
+// //eg:input_1 -> output_1_2 // npx babel input_1.js -o output_1_2.js
+
+// {
+//   "presets": [
+//     [
+//       "@babel/preset-env",
+//       {
+//         "useBuiltIns": "usage", //默认为false，即不做api兼容
+//         "corejs": {
+//           "version": 3
+//         }
+//       }
+//     ]
+//   ],
+//   "plugins": []
+// }
+
+// //eg:input_2 -> output_2_1 // npx babel input_2.js -o output_2_1.js
+
+// {
+//   "presets": [
+//     [
+//       "@babel/preset-env",
+//       {
+//         "useBuiltIns": "usage", //默认为false，即不做api兼容
+//         "corejs": {
+//           "version": 3
+//         }
+//       }
+//     ]
+//   ],
+//   "plugins": []
+// }
+
+// //eg:input_2 -> output_2_2 // npx babel input_2.js -o output_2_2.js
+
+// {
+//   "presets": [
+//     [
+//       "@babel/preset-env",
+//       {
+//         "useBuiltIns": "usage", //默认为false，即不做api兼容
+//         "corejs": {
+//           "version": 3
+//         }
+//       }
+//     ]
+//   ],
+//   "plugins": [
+//     [
+//       "@babel/plugin-transform-runtime",
+//       {
+//         "corejs": 3
+//       }
+//     ]
+//   ]
+// }
+
+/**
+ * eg: input -> output // npx babel input.js -o output.js
+ * @description: 开发babel插件
+ * let转var transform-let-to-var.js
+ * 箭头函数转普通函数 transform-arrow-functions.js
+ */
+
 {
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "useBuiltIns": "usage", //默认为false，即不做api兼容
-        "corejs": {
-          "version": 3
-        }
-      }
-    ]
-  ],
-  "plugins": [
-    // "./transform-let-to-var.js", "./transform-arrow-functions.js",
-    [
-      "@babel/plugin-transform-runtime",
-      {
-        "corejs": 3
-      }
-    ]
-  ]
+  "presets": [],
+  "plugins": ["./transform-let-to-var.js", "./transform-arrow-functions.js"]
 }
