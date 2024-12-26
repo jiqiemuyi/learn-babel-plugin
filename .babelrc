@@ -1,28 +1,11 @@
-// // eg:input_1 -> output_1_1 // npx babel input_1.js -o output_1_1.js
-
 // {
 //   "presets": ["@babel/preset-env"],
 //   "plugins": []
 // }
-
-// //eg:input_1 -> output_1_2 // npx babel input_1.js -o output_1_2.js
-
-// {
-//   "presets": [
-//     [
-//       "@babel/preset-env",
-//       {
-//         "useBuiltIns": "usage", //默认为false，即不做api兼容
-//         "corejs": {
-//           "version": 3
-//         }
-//       }
-//     ]
-//   ],
-//   "plugins": []
-// }
-
-// //eg:input_2 -> output_2_1 // npx babel input_2.js -o output_2_1.js
+// npx babel input_1.js -o output_1_1.js
+// 可以发现代码中所有新语法都被转化为了低版本浏览器可用的语法，而 Promise 这种新 api 则没有做任何处理。
+// 实际上@babel/preset-env 也提供了 api 兼容处理，只是默认未被开启
+// 修改配置为：
 
 // {
 //   "presets": [
@@ -38,8 +21,29 @@
 //   ],
 //   "plugins": []
 // }
+// npx babel input_1.js -o output_1_2.js
+// 可以看到额外引入了若干文件，做了 api 的兼容处理，但此时依然存在几个问题,查看input_2新增代码
 
-// //eg:input_2 -> output_2_2 // npx babel input_2.js -o output_2_2.js
+// {
+//   "presets": [
+//     [
+//       "@babel/preset-env",
+//       {
+//         "useBuiltIns": "usage", //默认为false，即不做api兼容
+//         "corejs": {
+//           "version": 3
+//         }
+//       }
+//     ]
+//   ],
+//   "plugins": []
+// }
+// npx babel input_2.js -o output_2_1.js
+// 1. 有辅助函数的定义，当我们有很多文件要被转换时，这些辅助函数就会被定义多次导致文件体积变大
+// 2. 直接 require 了一些文件，这些文件中直接对原型链做了改写，存在全局污染的问题
+// 以上两个问题其实都可以通过使用@babel/plugin-transform-runtime 配合@babel/runtime 来解决
+// 1. 所有的辅助函数均已被隔离在@babel/runtime/helps 中
+// 2. runtime 本身也提供 polyfill 能力，且没有通过在全局引入文件这种形式处理，我们可以通过增加 corejs 的配置开启 runtime 的 polyfill 能力
 
 // {
 //   "presets": [
@@ -62,9 +66,12 @@
 //     ]
 //   ]
 // }
+// npx babel input_2.js -o output_2_2.js
+// 可以看出，所有的辅助函数均从@babel/runtime-corejs3 中导出，且不再全局 require 文件，而是通过@babel/runtime-corejs3 来导入需要的新 api
+// 到此一套完整的 babel 配置就完成了。
 
 /**
- * eg: input -> output // npx babel input.js -o output.js
+ *
  * @description: 开发babel插件
  * let转var transform-let-to-var.js
  * 箭头函数转普通函数 transform-arrow-functions.js
@@ -74,3 +81,4 @@
   "presets": [],
   "plugins": ["./transform-let-to-var.js", "./transform-arrow-functions.js"]
 }
+// npx babel input.js -o output.js
